@@ -1,0 +1,48 @@
+# dependencies
+/node_modules
+
+# build outputs
+/dist
+/build
+
+# local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# system files
+.DS_Store
+Thumbs.db
+
+# IDE/editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# generated assets
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.webp
+
+# lockfiles (optional – keep if you want reproducible builds)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# cache
+/.parcel-cache
+/.turbo
+/.next
+/.cache
