@@ -19,5 +19,21 @@ export default function App() {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
+  // Global keyboard shortcuts (non-input specific)
+  useEffect(() => {
+    const handleGlobalKeyDown = (e) => {
+      // Only handle if no input is focused
+      if (document.activeElement?.tagName.toLowerCase() === 'input') return;
+      
+      // Theme toggle with T key
+      if (e.key === 't' || e.key === 'T') {
+        setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+      }
+    };
+
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, []);
+
   return <Home theme={theme} setTheme={setTheme} />;
 }
