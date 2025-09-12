@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
 /* CSS Custom Properties */
 :root {
@@ -25,74 +25,76 @@ body {
 }
 
 /* Glassmorphism utilities */
-.glass {
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-  backdrop-filter: blur(8px) saturate(120%);
-  -webkit-backdrop-filter: blur(8px) saturate(120%);
-  border: 1px solid rgba(255,255,255,0.06);
-}
+@layer components {
+  .glass {
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
 
-.light .glass {
-  background: linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.2));
-  border: 1px solid rgba(0,0,0,0.1);
-}
+  .light .glass {
+    background: linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.2));
+    border: 1px solid rgba(0,0,0,0.1);
+  }
 
-/* Button gradients */
-.btn-gradient {
-  background-image: linear-gradient(90deg,#7c3aed,#06b6d4);
-  transition: all 0.2s ease;
-}
+  /* Button gradients */
+  .btn-gradient {
+    background-image: linear-gradient(90deg,#7c3aed,#06b6d4);
+    transition: all 0.2s ease;
+  }
 
-.btn-gradient:hover {
-  box-shadow: 0 8px 25px rgba(124,58,237,0.3);
-}
+  .btn-gradient:hover {
+    box-shadow: 0 8px 25px rgba(124,58,237,0.3);
+  }
 
-/* Custom slider styles */
-.slider {
-  -webkit-appearance: none;
-  appearance: none;
-  height: 6px;
-  border-radius: 3px;
-  background: var(--slider-track);
-  outline: none;
-  transition: all 0.2s ease;
-}
+  /* Custom slider styles */
+  .slider {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--slider-track);
+    outline: none;
+    transition: all 0.2s ease;
+  }
 
-.slider:hover {
-  background: rgba(255,255,255,0.2);
-}
+  .slider:hover {
+    background: rgba(255,255,255,0.2);
+  }
 
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--slider-thumb);
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  transition: all 0.2s ease;
-}
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--slider-thumb);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+  }
 
-.slider::-webkit-slider-thumb:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(124,58,237,0.4);
-}
+  .slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(124,58,237,0.4);
+  }
 
-.slider::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--slider-thumb);
-  cursor: pointer;
-  border: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  transition: all 0.2s ease;
-}
+  .slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--slider-thumb);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+  }
 
-.slider::-moz-range-thumb:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(124,58,237,0.4);
+  .slider::-moz-range-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(124,58,237,0.4);
+  }
 }
 
 /* Focus styles for accessibility */

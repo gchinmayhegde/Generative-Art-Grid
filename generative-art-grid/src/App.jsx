@@ -9,13 +9,14 @@ export default function App() {
 
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === "light") {
-      root.classList.remove("dark");
-      root.classList.add("light");
-    } else {
-      root.classList.remove("light");
-      root.classList.add("dark");
-    }
+    
+    // Remove existing theme classes
+    root.classList.remove("dark", "light");
+    
+    // Add current theme class
+    root.classList.add(theme);
+    
+    // Store theme preference
     localStorage.setItem("theme", theme);
   }, [theme]);
 
