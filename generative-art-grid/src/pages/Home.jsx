@@ -147,24 +147,52 @@ export default function Home({ theme, setTheme }) {
     
     setIsExporting(true);
     try {
-      // Clone the grid content into the export card
-      const artworkClone = gridRef.current.cloneNode(true);
-      artworkClone.style.transform = 'none';
-      artworkClone.style.maxWidth = 'none';
-      
+      // Get all canvas elements from the grid
+      const canvases = gridRef.current.querySelectorAll('canvas');
+      if (canvases.length === 0) {
+        showToast('No artwork found to export');
+        setIsExporting(false);
+        return;
+      }
+
+      // Create a container for the grid layout
+      const gridContainer = document.createElement('div');
+      gridContainer.style.display = 'grid';
+      gridContainer.style.gridTemplateColumns = `repeat(${settings.gridSize}, 1fr)`;
+      gridContainer.style.gap = '8px';
+      gridContainer.style.width = '100%';
+      gridContainer.style.aspectRatio = '1';
+
+      // Clone each canvas and add to grid container
+      canvases.forEach((canvas, index) => {
+        const canvasClone = document.createElement('canvas');
+        const ctx = canvasClone.getContext('2d');
+        
+        canvasClone.width = canvas.width;
+        canvasClone.height = canvas.height;
+        canvasClone.style.width = '100%';
+        canvasClone.style.height = '100%';
+        canvasClone.style.borderRadius = '8px';
+        
+        ctx.drawImage(canvas, 0, 0);
+        gridContainer.appendChild(canvasClone);
+      });
+
+      // Clear and populate the export card artwork container
       if (artworkCloneRef.current) {
         artworkCloneRef.current.innerHTML = '';
-        artworkCloneRef.current.appendChild(artworkClone);
+        artworkCloneRef.current.appendChild(gridContainer);
       }
 
       // Wait for render
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 200));
 
       // Export the card
       const canvas = await html2canvas(exportCardRef.current, {
         scale: 2,
         useCORS: true,
         backgroundColor: '#0f172a',
+        logging: false,
         onclone: (clonedDoc) => {
           // Ensure fonts are loaded in cloned document
           const clonedCard = clonedDoc.querySelector('[data-export-card]');

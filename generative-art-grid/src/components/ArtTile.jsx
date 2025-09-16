@@ -1,4 +1,4 @@
-// src/components/ArtTile.jsx
+
 import React, { useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { drawPattern } from "../utils/generators";

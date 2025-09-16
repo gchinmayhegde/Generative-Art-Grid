@@ -161,30 +161,30 @@ export default function TileModal({ spec, isOpen, onClose, globalAnimationSpeed 
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setLocalAnimating(!localAnimating)}
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg glass hover:bg-white/10 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg glass hover:bg-white/10 transition-colors text-white font-medium"
                     >
                       {localAnimating ? <FaPause /> : <FaPlay />}
-                      {localAnimating ? 'Pause' : 'Play'}
+                      <span className="text-white">{localAnimating ? 'Pause' : 'Play'}</span>
                     </button>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <button
                       onClick={handleCopySeed}
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg glass hover:bg-white/10 transition-colors text-sm"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg glass hover:bg-white/10 transition-colors text-sm font-medium"
                       disabled={copying}
                     >
-                      <FaCopy />
-                      {copying ? 'Copied!' : 'Copy Seed'}
+                      <FaCopy className="text-white" />
+                      <span className="text-white">{copying ? 'Copied!' : 'Copy Seed'}</span>
                     </button>
                     
                     <button
                       onClick={handleExport}
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg btn-gradient text-white hover:scale-105 transition-transform"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg btn-gradient text-white hover:scale-105 transition-transform font-medium"
                       disabled={exporting}
                     >
                       <FaDownload />
-                      {exporting ? 'Exporting...' : 'Export PNG'}
+                      <span className="text-white">{exporting ? 'Exporting...' : 'Export PNG'}</span>
                     </button>
                   </div>
                 </div>
