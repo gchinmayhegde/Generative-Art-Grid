@@ -112,12 +112,49 @@ input[type="radio"]:focus-visible + div {
 }
 
 /* Light theme overrides */
+.light {
+  color: #1f2937;
+}
+
+.light .glass {
+  background: linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.2));
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
 .light .slider {
   background: rgba(0,0,0,0.15);
 }
 
 .light .slider:hover {
   background: rgba(0,0,0,0.25);
+}
+
+/* Light mode text colors */
+.light h1,
+.light h2,
+.light h3,
+.light h4 {
+  color: #1f2937 !important;
+}
+
+.light .text-white {
+  color: #1f2937 !important;
+}
+
+.light .text-white\/90 {
+  color: #374151 !important;
+}
+
+.light .text-white\/80 {
+  color: #4b5563 !important;
+}
+
+.light .text-white\/70 {
+  color: #6b7280 !important;
+}
+
+.light .text-white\/60 {
+  color: #9ca3af !important;
 }
 
 /* Animation utilities */

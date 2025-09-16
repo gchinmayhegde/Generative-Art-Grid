@@ -51,9 +51,9 @@ export function generateTileSpecs(count = 12, options = {}) {
 
 function getTypeLabel(type) {
   const labels = {
-    pixel: "Pixel Noise",
+    pixel: "Moving Lights",
     wave: "Waveform",
-    fractal: "Fractal Blocks",
+    fractal: "Light Rays",
     diagonal: "Diagonal Strata",
     grain: "Soft Grain"
   };
@@ -76,45 +76,74 @@ export function drawPixelNoise(ctx, w, h, options = {}) {
 
   const rng = createRNG(seed);
   const colors = getPalette(palette);
-  const cellSize = designerMode 
-    ? Math.floor(8 + complexity) 
-    : Math.floor(6 + rng() * (complexity + 5));
-  
-  const cols = Math.ceil(w / cellSize);
-  const rows = Math.ceil(h / cellSize);
   
   // Background
   ctx.fillStyle = colors[0];
   ctx.fillRect(0, 0, w, h);
 
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < cols; x++) {
-      const px = x * cellSize;
-      const py = y * cellSize;
+  // Create multiple light sources
+  const lightCount = designerMode ? 2 + complexity : 3 + Math.floor(rng() * complexity);
+  
+  for (let i = 0; i < lightCount; i++) {
+    // Light source movement
+    const baseX = (rng() * 0.6 + 0.2) * w; // Keep lights within center 60%
+    const baseY = (rng() * 0.6 + 0.2) * h;
+    
+    // Smooth circular movement
+    const radius = designerMode ? 20 + complexity * 5 : 30 + rng() * 50;
+    const speed = designerMode ? 0.3 : 0.2 + rng() * 0.4;
+    const phase = rng() * Math.PI * 2;
+    
+    const lightX = baseX + Math.cos(time * speed + phase + i) * radius;
+    const lightY = baseY + Math.sin(time * speed * 0.7 + phase + i * 1.3) * radius;
+    
+    // Light properties
+    const maxRadius = designerMode ? 80 + complexity * 10 : 100 + rng() * 80;
+    const intensity = designerMode ? 0.3 : 0.4 + rng() * 0.3;
+    const colorIndex = 1 + (i % (colors.length - 1));
+    
+    // Create radial gradient for light
+    const gradient = ctx.createRadialGradient(
+      lightX, lightY, 0,
+      lightX, lightY, maxRadius
+    );
+    
+    // Inner glow
+    gradient.addColorStop(0, hexToRGBA(colors[colorIndex], intensity));
+    gradient.addColorStop(0.3, hexToRGBA(colors[colorIndex], intensity * 0.6));
+    gradient.addColorStop(0.6, hexToRGBA(colors[colorIndex], intensity * 0.2));
+    gradient.addColorStop(1, hexToRGBA(colors[colorIndex], 0));
+    
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, w, h);
+    
+    // Add core light spot
+    const coreGradient = ctx.createRadialGradient(
+      lightX, lightY, 0,
+      lightX, lightY, maxRadius * 0.2
+    );
+    
+    coreGradient.addColorStop(0, hexToRGBA("#ffffff", intensity * 0.3));
+    coreGradient.addColorStop(0.5, hexToRGBA(colors[colorIndex], intensity * 0.5));
+    coreGradient.addColorStop(1, hexToRGBA(colors[colorIndex], 0));
+    
+    ctx.fillStyle = coreGradient;
+    ctx.fillRect(0, 0, w, h);
+  }
+  
+  // Add subtle ambient particles for extra movement
+  if (!designerMode) {
+    const particleCount = 20 + complexity * 5;
+    for (let i = 0; i < particleCount; i++) {
+      const px = (rng() * w + Math.sin(time * 0.5 + i) * 20) % w;
+      const py = (rng() * h + Math.cos(time * 0.3 + i) * 15) % h;
+      const size = 1 + rng() * 2;
+      const alpha = 0.1 + Math.sin(time + i) * 0.05;
       
-      // Animated opacity based on time and position
-      const baseAlpha = designerMode ? 0.3 : 0.5;
-      const animOffset = Math.sin(time * 0.5 + (x + y) * 0.2) * 0.2;
-      const alpha = Math.max(0.1, baseAlpha + rng() * 0.4 + animOffset);
-      
-      const colorIndex = Math.floor(rng() * (colors.length - 1)) + 1;
-      const color = colors[colorIndex];
-      
-      ctx.fillStyle = hexToRGBA(color, alpha);
-      
-      if (designerMode) {
-        // Rounded squares for designer mode
-        roundRect(ctx, px + 1, py + 1, cellSize - 2, cellSize - 2, cellSize * 0.15);
-        ctx.fill();
-      } else {
-        ctx.fillRect(px, py, cellSize - 1, cellSize - 1);
-        
-        // Add depth overlay
-        if (rng() > 0.8) {
-          ctx.fillStyle = hexToRGBA("#000000", 0.1);
-          ctx.fillRect(px + cellSize * 0.2, py + 0.2, cellSize * 0.6, cellSize * 0.6);
-        }
-      }
+      ctx.fillStyle = hexToRGBA(colors[1 + (i % (colors.length - 1))], alpha);
+      ctx.beginPath();
+      ctx.arc(px, py, size, 0, Math.PI * 2);
+      ctx.fill();
     }
   }
 }
@@ -173,7 +202,8 @@ export function drawWaveform(ctx, w, h, options = {}) {
   }
 }
 
-// ---------- Enhanced Recursive Fractal Blocks ----------
+// ---------- Enhanced Cursor Animations ----------
+
 export function drawFractal(ctx, w, h, options = {}) {
   const {
     seed = 3,
@@ -186,51 +216,103 @@ export function drawFractal(ctx, w, h, options = {}) {
   const rng = createRNG(seed);
   const colors = getPalette(palette);
   
+  // Background
   ctx.fillStyle = colors[0];
   ctx.fillRect(0, 0, w, h);
 
-  const maxDepth = Math.max(2, Math.min(6, complexity));
+  // Light ray parameters
+  const rayCount = designerMode ? 1 + Math.floor(complexity / 3) : 1 + Math.floor(rng() * 3);
   
-  function drawBlock(x, y, size, depth) {
-    const margin = Math.max(1, Math.floor(size * 0.05));
+  for (let r = 0; r < rayCount; r++) {
+    // Ray movement - simulates following cursor/interaction
+    const centerX = w * 0.5;
+    const centerY = h * 0.5;
     
-    // Animated pulsing based on time and depth
-    const pulseScale = designerMode ? 
-      1 + Math.sin(time + depth) * 0.02 :
-      1 + Math.sin(time * 0.8 + depth * 0.5) * 0.05;
+    // Create smooth movement pattern that simulates user interaction
+    const targetX = centerX + Math.sin(time * 0.8 + r * 2) * (w * 0.3);
+    const targetY = centerY + Math.cos(time * 0.6 + r * 1.5) * (h * 0.3);
     
-    const actualSize = size * pulseScale;
-    const alpha = designerMode ? 
-      0.4 - depth * 0.05 :
-      0.9 - depth * 0.08;
+    // Ray properties
+    const rayLength = designerMode ? 80 + complexity * 10 : 100 + rng() * 60;
+    const rayWidth = designerMode ? 3 + complexity : 4 + rng() * 6;
+    const intensity = designerMode ? 0.6 : 0.7 + rng() * 0.3;
     
-    ctx.fillStyle = hexToRGBA(colors[1 + (depth % (colors.length - 1))], alpha);
+    // Calculate ray angle (pointing toward target)
+    const angle = Math.atan2(targetY - centerY, targetX - centerX);
     
-    const cornerRadius = designerMode ? actualSize * 0.1 : actualSize * 0.06;
-    roundRect(ctx, x + margin, y + margin, actualSize - margin * 2, actualSize - margin * 2, cornerRadius);
+    // Ray start and end points
+    const startX = centerX - Math.cos(angle) * rayLength * 0.5;
+    const startY = centerY - Math.sin(angle) * rayLength * 0.5;
+    const endX = centerX + Math.cos(angle) * rayLength * 0.5;
+    const endY = centerY + Math.sin(angle) * rayLength * 0.5;
+    
+    // Create linear gradient along the ray
+    const rayGradient = ctx.createLinearGradient(startX, startY, endX, endY);
+    const colorIndex = 1 + (r % (colors.length - 1));
+    
+    rayGradient.addColorStop(0, hexToRGBA(colors[colorIndex], 0));
+    rayGradient.addColorStop(0.3, hexToRGBA(colors[colorIndex], intensity * 0.8));
+    rayGradient.addColorStop(0.7, hexToRGBA(colors[colorIndex], intensity));
+    rayGradient.addColorStop(1, hexToRGBA(colors[colorIndex], 0));
+    
+    // Draw main ray
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.rotate(angle);
+    
+    // Create ray shape with rounded ends
+    ctx.beginPath();
+    ctx.ellipse(0, 0, rayLength * 0.5, rayWidth * 0.5, 0, 0, Math.PI * 2);
+    ctx.fillStyle = rayGradient;
     ctx.fill();
-
-    if (depth <= 0 || actualSize < 20) return;
     
-    const splits = designerMode ? 2 : (2 + (rng() > 0.6 ? 1 : 0));
-    const threshold = designerMode ? 0.7 : 0.6;
+    // Add bright core
+    ctx.beginPath();
+    ctx.ellipse(0, 0, rayLength * 0.5, rayWidth * 0.2, 0, 0, Math.PI * 2);
+    ctx.fillStyle = hexToRGBA("#ffffff", intensity * 0.4);
+    ctx.fill();
     
-    for (let sx = 0; sx < splits; sx++) {
-      for (let sy = 0; sy < splits; sy++) {
-        if (rng() > threshold) {
-          const nx = x + (sx * actualSize) / splits;
-          const ny = y + (sy * actualSize) / splits;
-          const nsize = actualSize / splits;
-          drawBlock(nx, ny, nsize, depth - 1);
-        }
-      }
+    ctx.restore();
+    
+    // Add glow effect around the ray
+    const glowGradient = ctx.createRadialGradient(
+      centerX, centerY, 0,
+      centerX, centerY, rayLength * 0.8
+    );
+    glowGradient.addColorStop(0, hexToRGBA(colors[colorIndex], intensity * 0.2));
+    glowGradient.addColorStop(0.5, hexToRGBA(colors[colorIndex], intensity * 0.1));
+    glowGradient.addColorStop(1, hexToRGBA(colors[colorIndex], 0));
+    
+    ctx.fillStyle = glowGradient;
+    ctx.fillRect(0, 0, w, h);
+    
+    // Add interaction point (where ray is "pointing")
+    const pulseRadius = 8 + Math.sin(time * 3 + r) * 4;
+    const pointGradient = ctx.createRadialGradient(
+      targetX, targetY, 0,
+      targetX, targetY, pulseRadius
+    );
+    pointGradient.addColorStop(0, hexToRGBA("#ffffff", 0.8));
+    pointGradient.addColorStop(0.3, hexToRGBA(colors[colorIndex], 0.6));
+    pointGradient.addColorStop(1, hexToRGBA(colors[colorIndex], 0));
+    
+    ctx.fillStyle = pointGradient;
+    ctx.fillRect(0, 0, w, h);
+  }
+  
+  // Add subtle connecting particles
+  if (!designerMode && complexity > 5) {
+    for (let i = 0; i < 8; i++) {
+      const px = w * 0.5 + Math.sin(time + i * 0.8) * 40;
+      const py = h * 0.5 + Math.cos(time * 0.8 + i) * 40;
+      const size = 2 + Math.sin(time * 2 + i) * 1;
+      
+      ctx.fillStyle = hexToRGBA(colors[2], 0.3);
+      ctx.beginPath();
+      ctx.arc(px, py, size, 0, Math.PI * 2);
+      ctx.fill();
     }
   }
-
-  const size = Math.min(w, h) * (0.85 - rng() * (designerMode ? 0.1 : 0.25));
-  const startX = (w - size) / 2;
-  const startY = (h - size) / 2;
-  drawBlock(startX, startY, size, maxDepth);
 }
 
 // ---------- NEW: Diagonal Strata ----------
