@@ -2,7 +2,7 @@
 
 A powerful, interactive generative art tool designed for UI designers and creative professionals. Create stunning, reproducible patterns with real-time controls and professional export capabilities.
 
-![Generative Art Grid Demo](Will be available soon)
+[Generative Art Grid Demo]: https://generative-art-grid21.vercel.app/
 
 ## ✨ Features
 
