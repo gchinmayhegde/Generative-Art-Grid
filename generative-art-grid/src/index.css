@@ -245,3 +245,38 @@ input[type="radio"]:focus-visible + div {
     animation: none;
   }
 }
+
+/* Mobile-specific improvements */
+@media (max-width: 640px) {
+  /* Reduce padding on mobile */
+  .min-h-screen {
+    padding: 1rem 0.5rem;
+  }
+  
+  /* Smaller glass panels on mobile */
+  .glass {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  
+  /* Stack header elements on mobile */
+  .header-mobile-stack > div:first-child h1 {
+    font-size: 1.25rem;
+  }
+  
+  .header-mobile-stack > div:first-child p {
+    font-size: 0.75rem;
+  }
+  
+  /* Make modal full-screen on mobile */
+  .modal-mobile .glass {
+    margin: 0.5rem;
+    max-height: calc(100vh - 1rem);
+    max-width: calc(100vw - 1rem);
+  }
+  
+  /* Reduce grid gap on mobile */
+  .grid-mobile-gap {
+    gap: 0.75rem;
+  }
+}

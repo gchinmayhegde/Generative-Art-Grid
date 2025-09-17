@@ -6,7 +6,7 @@ export default function Header({ theme, setTheme }) {
     <div className="flex items-center justify-between">
       <div>
         <h1 className="text-2xl font-extrabold tracking-tight text-white/90">🎨 Generative Art Grid</h1>
-        <p className="text-sm text-white/60">A tiny creative engine — pixel noise, waveforms & fractals</p>
+        <p className="text-sm text-white/60">A tiny creative engine — moving lights, waveforms & soft grains</p>
       </div>
 
       <div className="flex items-center gap-3">

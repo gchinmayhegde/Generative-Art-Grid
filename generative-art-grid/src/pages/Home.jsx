@@ -289,7 +289,7 @@ export default function Home({ theme, setTheme }) {
       <div className="w-full max-w-7xl mx-auto">
         {/* Header */}
         <div className="glass rounded-2xl p-6 mb-6">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 header-mobile-stack">
             <Header theme={theme} setTheme={setTheme} />
             <div className="flex items-center gap-4">
               <Playbar
@@ -368,7 +368,7 @@ export default function Home({ theme, setTheme }) {
             <div className="glass rounded-2xl p-6">
               <div 
                 ref={gridRef}
-                className="grid gap-4 place-items-center"
+                className="grid gap-4 place-items-center grid-mobile-gap sm:gap-4"
                 style={{
                   gridTemplateColumns: `repeat(${settings.gridSize}, 1fr)`
                 }}
